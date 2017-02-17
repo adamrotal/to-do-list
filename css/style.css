@@ -1,11 +1,12 @@
-body {
+body, div, label {
   margin: 0;
 }
+
 
 header {
   width: 50%;
   height: auto;
-  text-align: center;
+  text-align: left;
 
   position: fixed;
   padding: 15px;
@@ -15,7 +16,7 @@ header {
 
   z-index: 5;
 
-  background: #25b99a;
+  background: #79bc43;
   background-size: 100%;
   box-shadow: 0px 2px 4px rgba(44, 62, 80, 0.15);
   -moz-box-shadow: 0px 2px 4px rgba(44, 62, 80, 0.15);
@@ -23,6 +24,23 @@ header {
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
 }
+
+header input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+header input:-moz-placeholder, textarea:-moz-placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+header input::-moz-placeholder, textarea::-moz-placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+header input:-ms-placeholder, textarea:-ms-placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+
 
 header input, textarea {
   width: 100%;
@@ -43,29 +61,54 @@ header input, textarea {
   text-indent: 18px;
   font-size: 20px;
   border-radius: 5px 5px 0px 0px;
-  box-shadow: 0 2px 4px -2px rgba(44, 62, 80, 0.15);
+  box-shadow: 0 3px 4px rgba(44, 62, 80, 0.15);
 }
 
 .new_desc {
   width: 94%;
   font-size: 15px;
   padding: 3%;
+  margin: 0;
+  resize: none;
 }
 
-header input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
-  color: rgba(255, 255, 255, 0.75);
+.new_date {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  display:inline-table;
+
+  border-top-right-radius: 25px;
+  border-bottom-right-radius: 25px;
+
 }
 
-header input:-moz-placeholder, textarea:-moz-placeholder {
-  color: rgba(255, 255, 255, 0.75);
+.new_date_label {
+  text-indent: 18px;
+  float: left;
+  height: auto;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 400;
+  padding-top: 3px;
 }
 
-header input::-moz-placeholder, textarea::-moz-placeholder {
-  color: rgba(255, 255, 255, 0.75);
+.new_date_start {
+  background: none;
+  font-size: 15px;
+  text-indent: 5px;
+  width: 140px;
+  height: auto;
 }
 
-header input:-ms-placeholder, textarea:-ms-placeholder {
-  color: rgba(255, 255, 255, 0.75);
+.priority {
+  color: #fff;
+  background: rgba(0, 0, 0, 0.2);
+  border: none;
+  padding-top: 3px;
+}
+
+.new_date_start::-webkit-inner-spin-button {
+  -webkit-appearance: none;
 }
 
 header button {
@@ -73,7 +116,7 @@ header button {
   height: 50px;
 
   position:absolute;
-  top:15px;
+  bottom:0px;
   right:15px;
   z-index:2;
 
@@ -100,5 +143,5 @@ header button svg {
 }
 
 header button svg .fill {
-  fill: #25b99a;
+  fill: #79bc43;
 }
