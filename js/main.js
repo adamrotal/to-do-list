@@ -3,10 +3,9 @@ var data =  (localStorage.getItem('toDoList')) ? JSON.parse(localStorage.getItem
   completed : []
 }
 
-var SVGremove = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22" style="enable-background:new 0 0 22 22;" xml:space="preserve"><rect class="noFill" width="22" height="22"/><g><g><path class="fill" d="M16.1,3.6h-1.9V3.3c0-1.3-1-2.3-2.3-2.3h-1.7C8.9,1,7.8,2,7.8,3.3v0.2H5.9c-1.3,0-2.3,1-2.3,2.3v1.3c0,0.5,0.4,0.9,0.9,1v10.5c0,1.3,1,2.3,2.3,2.3h8.5c1.3,0,2.3-1,2.3-2.3V8.2c0.5-0.1,0.9-0.5,0.9-1V5.9C18.4,4.6,17.4,3.6,16.1,3.6z M9.1,3.3c0-0.6,0.5-1.1,1.1-1.1h1.7c0.6,0,1.1,0.5,1.1,1.1v0.2H9.1V3.3z M16.3,18.7c0,0.6-0.5,1.1-1.1,1.1H6.7c-0.6,0-1.1-0.5-1.1-1.1V8.2h10.6V18.7z M17.2,7H4.8V5.9c0-0.6,0.5-1.1,1.1-1.1h10.2c0.6,0,1.1,0.5,1.1,1.1V7z"/></g><g><g><path class="fill" d="M11,18c-0.4,0-0.6-0.3-0.6-0.6v-6.8c0-0.4,0.3-0.6,0.6-0.6s0.6,0.3,0.6,0.6v6.8C11.6,17.7,11.4,18,11,18z"/></g><g><path class="fill" d="M8,18c-0.4,0-0.6-0.3-0.6-0.6v-6.8c0-0.4,0.3-0.6,0.6-0.6c0.4,0,0.6,0.3,0.6,0.6v6.8C8.7,17.7,8.4,18,8,18z"/></g><g><path class="fill" d="M14,18c-0.4,0-0.6-0.3-0.6-0.6v-6.8c0-0.4,0.3-0.6,0.6-0.6c0.4,0,0.6,0.3,0.6,0.6v6.8C14.6,17.7,14.3,18,14,18z"/></g></g></g></svg>';
-var SVGcomplete = '<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 22 22" style="enable-background:new 0 0 22 22;" xml:space="preserve"><rect y="0" class="noFill" width="22" height="22"/><g><path class="fill" d="M9.7,14.4L9.7,14.4c-0.2,0-0.4-0.1-0.5-0.2l-2.7-2.7c-0.3-0.3-0.3-0.8,0-1.1s0.8-0.3,1.1,0l2.1,2.1l4.8-4.8c0.3-0.3,0.8-0.3,1.1,0s0.3,0.8,0,1.1l-5.3,5.3C10.1,14.3,9.9,14.4,9.7,14.4z"/></g></svg>';
-
 renderToDoList();
+
+var descDefined, startDefined, endDefined, priorDefined;
 
 document.getElementById('add').addEventListener('click', function() {
   var title = document.getElementById('title').value;
@@ -15,7 +14,7 @@ document.getElementById('add').addEventListener('click', function() {
   var end = document.getElementById('end').value;
   var prior = document.getElementById('priority').value;
 
-  if (title && desc && start && end && prior) {
+  if (title) {
       addItemTodo(title, desc, start, end, prior, false);
       document.getElementById('title').value = '';
       document.getElementById('desc').value = '';
@@ -29,7 +28,7 @@ document.getElementById('add').addEventListener('click', function() {
       dataObjectUpdated();
 
   } else {
-    alert('The form can not be empty');
+    alert('The title can not be empty');
   }
 
 });
@@ -160,53 +159,61 @@ function editItem() {
   var parent = item.parentNode;
   var id = parent.id;
   var title = item.getElementsByTagName("h3")[0];
-  var desc = item.getElementsByTagName("p")[0];
-  var start = item.getElementsByTagName("span")[1].getElementsByTagName("span")[0];
-  var end = item.getElementsByTagName("span")[3].getElementsByTagName("span")[0];
-  var prior = item.getElementsByTagName("span")[5].getElementsByTagName("span")[0];
+  var desc = item.querySelector("p");
+  var start = item.querySelector("span.start-item");
+  var end = item.querySelector("span.end-item");
+  var prior = item.querySelector("span.priority-item");
+
   // console.log(prior.innerText);
-  console.log("title " + title.contentEditable);
 
   if (title.contentEditable == "true") {
       title.contentEditable = "false";
-      desc.contentEditable = "false";
-      start.contentEditable = "false";
-      end.contentEditable = "false";
-      prior.contentEditable = "false";
+      if (desc) desc.contentEditable = "false";
+      if (start) start.contentEditable = "false";
+      if (end) end.contentEditable = "false";
+      if (prior) prior.contentEditable = "false";
 
       if (id === 'todo') {
         // go to complete
         data.todo[getIndexOfK(data.todo, oldTitle)][0] = title.innerText;
-        data.todo[getIndexOfK(data.todo, oldDesc)][1] = desc.innerText;
-        data.todo[getIndexOfK(data.todo, oldStart)][2] = start.innerText;
-        data.todo[getIndexOfK(data.todo, oldEnd)][3] = end.innerText;
-        data.todo[getIndexOfK(data.todo, oldPriority)][4] = prior.innerText;
+        if (desc) data.todo[getIndexOfK(data.todo, oldDesc)][1] = desc.innerText;
+        if (start) data.todo[getIndexOfK(data.todo, oldStart)][2] = start.innerText;
+        if (end) data.todo[getIndexOfK(data.todo, oldEnd)][3] = end.innerText;
+        if (prior) data.todo[getIndexOfK(data.todo, oldPriority)][4] = prior.innerText;
 
       } else {
         // go to todo
         data.completed[getIndexOfK(data.completed, oldTitle)][0] = title.innerText;
-        data.completed[getIndexOfK(data.completed, oldDesc)][1] = desc.innerText;
-        data.completed[getIndexOfK(data.completed, oldStart)][2] = start.innerText;
-        data.completed[getIndexOfK(data.completed, oldEnd)][3] = end.innerText;
-        data.completed[getIndexOfK(data.completed, oldPriority)][4] = prior.innerText;
+        if (desc) data.completed[getIndexOfK(data.completed, oldDesc)][1] = desc.innerText;
+        if (start) data.completed[getIndexOfK(data.completed, oldStart)][2] = start.innerText;
+        if (desc) data.completed[getIndexOfK(data.completed, oldEnd)][3] = end.innerText;
+        if (prior) data.completed[getIndexOfK(data.completed, oldPriority)][4] = prior.innerText;
 
 
       }
   } else {
-      title.contentEditable = "true";
-      desc.contentEditable = "true";
-      start.contentEditable = "true";
-      end.contentEditable = "true";
-      prior.contentEditable = "true";
 
+      title.contentEditable = "true";
       oldTitle = title.innerText;
-      oldDesc = desc.innerText;
-      oldStart = start.innerText;
-      oldEnd = end.innerText;
-      oldPriority = prior.innerText;
+      if (desc){
+        desc.contentEditable = "true";
+        oldDesc = desc.innerText;
+      }
+      if (start) {
+        start.contentEditable = "true";
+        oldStart = start.innerText;
+      }
+      if (end) {
+        end.contentEditable = "true";
+        oldEnd = end.innerText;
+      }
+      if (prior) {
+        prior.contentEditable = "true";
+        oldPriority = prior.innerText;
+      }
+
   }
 
-  console.log("title2 " + title.contentEditable);
   item.classList.toggle("editMode");
   dataObjectUpdated();
   // console.log(data);
@@ -261,6 +268,7 @@ function addItemTodo(t, d, s, e, p, isCompleted) {
   var start = document.createElement('span');
   start.innerHTML = "Start : ";
   var start2 = document.createElement('span');
+  start2.classList.add('start-item');
   start2.innerHTML = s;
 
 
@@ -268,12 +276,14 @@ function addItemTodo(t, d, s, e, p, isCompleted) {
   var end = document.createElement('span');
   end.innerHTML = "End : ";
   var end2 = document.createElement('span');
+  end2.classList.add('end-item');
   end2.innerHTML = e;
 
   //priority
   var priority = document.createElement('span');
   priority.innerHTML = "Priority : ";
   var priority2 = document.createElement('span');
+  priority2.classList.add('priority-item');
   priority2.innerHTML = p;
 
 
@@ -292,17 +302,24 @@ function addItemTodo(t, d, s, e, p, isCompleted) {
   item.appendChild(checkBox);
   item.appendChild(title);
   item.appendChild(buttons);
-  item.appendChild(desc);
+
+  if (d) {
+    item.appendChild(desc);
+  }
+
   if (s) {
    item.appendChild(start);
    item.appendChild(br);
-   }
- if (e) {
+  }
+
+  if (e) {
    item.appendChild(end);
    item.appendChild(br1);
-   }
- if (p) {
+  }
+
+  if (p) {
    item.appendChild(priority);
-   }
+  }
+
    list.insertBefore(item, list.childNodes[0]);
 }
