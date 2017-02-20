@@ -15,7 +15,7 @@ document.getElementById('add').addEventListener('click', function() {
   var end = document.getElementById('end').value;
   var prior = document.getElementById('priority').value;
 
-  if (title) {
+  if (title && desc && start && end && prior) {
       addItemTodo(title, desc, start, end, prior, false);
       document.getElementById('title').value = '';
       document.getElementById('desc').value = '';
@@ -29,7 +29,7 @@ document.getElementById('add').addEventListener('click', function() {
       dataObjectUpdated();
 
   } else {
-    alert('The title can not be empty');
+    alert('The form can not be empty');
   }
 
 });
@@ -164,8 +164,9 @@ function editItem() {
   var start = item.getElementsByTagName("span")[1].getElementsByTagName("span")[0];
   var end = item.getElementsByTagName("span")[3].getElementsByTagName("span")[0];
   var prior = item.getElementsByTagName("span")[5].getElementsByTagName("span")[0];
-  console.log(prior.innerText);
-  
+  // console.log(prior.innerText);
+  console.log("title " + title.contentEditable);
+
   if (title.contentEditable == "true") {
       title.contentEditable = "false";
       desc.contentEditable = "false";
@@ -205,6 +206,7 @@ function editItem() {
       oldPriority = prior.innerText;
   }
 
+  console.log("title2 " + title.contentEditable);
   item.classList.toggle("editMode");
   dataObjectUpdated();
   // console.log(data);
